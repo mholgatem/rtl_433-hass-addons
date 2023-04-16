@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         arch: [armhf, armv7, aarch64, amd64, i386]
-        addon: [rtl_433, rtl_433-next, rtl_433_mqtt_autodiscovery, rtl_433_mqtt_autodiscovery-next]
+        addon: [rtl_433, rtl_433_mqtt_autodiscovery]
 
     steps:
     - name: Checkout the repository
@@ -71,7 +71,7 @@ jobs:
 
     - name: Build ${{ matrix.addon }} ${{ matrix.arch }} image
       uses: home-assistant/builder@master
-      if: github.event.pull_request.head.repo.full_name != github.repository && github.event_name != 'schedule'
+      if: ${{ github.event.pull_request.head.repo.full_name }} != github.repository && github.event_name != 'schedule'
       with:
         args: |
           --${{ matrix.arch }} \
@@ -82,7 +82,7 @@ jobs:
 
     - name: Build nightly ${{ matrix.addon }} ${{ matrix.arch }} image
       uses: home-assistant/builder@master
-      if: github.event.pull_request.head.repo.full_name != github.repository && github.event_name == 'schedule'
+      if: ${{ github.event.pull_request.head.repo.full_name }} != github.repository && github.event_name == 'schedule'
       with:
         args: |
           --${{ matrix.arch }} \
